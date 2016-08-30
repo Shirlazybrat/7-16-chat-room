@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat Room</title>
+
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+	<script type="text/javascript">
+	var name = 'AKA';
+
+		console.log(io);
+		var socketio = io.connect('http://127.0.0.1:8080');
+
+		socketio.on('message_to_client', function(data){
+			document.getElementById('chats').innerHTML += '<div class="im">'+ data.message + ' -- ' + data.name + '</div>';
+		})
+
+		function sendMessage(){
+			var message = document.getElementById('message').value;
+			socketio.emit('message_to_server', 
+				{
+					message: message,
+					name: name 
+				}
+			);
+		}
+
+		function sendName(){
+			name = document.getElementById('nameInput').value;
+		}
+
+	</script>
+
+	<style>
+		
+	body{
+		background-color: grey;
+		color:  pink;
+		font-family: fantasy;
+		font-size: 1em;
+		margin: 100px 300px 100px 300px;
+	}
+
+	.container {
+		background-color: #fff;
+		height:  800px;
+		width: 600px;
+		margin: 20px;
+	}
+	
+	#chat-window input {
+		position: relative;
+	    height: 50px;
+	    margin-top: ;
+	    top: 740px;
+	    width: 590px;
+	    font-size: 20px;
+	}
+
+	#chat-window button {
+		position: relative;
+	    top: 770px;
+	    float: right;
+	}	
+
+	div .im {
+		color: grey;
+		margin: 5px 10px;
+		border: solid ;
+	}
+
+	</style>
+
+</head>
+<body>
+
+<h1>Chat Room</h1>
+
+<div id="name">
+	<input type="text" id="nameInput" placeholder="Enter name">
+	<button onclick="sendName()" placehlder="Please enter name">Submit name</button>
+</div>
+
+<div class="container">
+	<div id="chat-window">
+		<input type='text' id="message" placeholder="Your message here">
+
+		<button onclick="sendMessage()">Click here to send message!</button>
+
+		<div id="chats"></div>
+	</div>
+</div>
+
+</body>
+</html>
