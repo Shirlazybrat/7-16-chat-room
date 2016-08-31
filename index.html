@@ -1,204 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
 <head>
-	<title>Chat Room</title>
+	<title></title>
 
-	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
+	<style type="text/css" media="screen">
+		#chat-window{
+			display:  block;
+		}
+		#chats, #chat-stuff{
+			border:  2px solid black;
+			width:  45%;
+			display: inline-block;
+			min-height: 90vh;
+		}
+	</style>
 
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-
 	<script type="text/javascript">
-	var name = 'unknown';
-	var date = new Date();
-
-		console.log(io);
+		var name = "Anonymous";
+		var date = new Date().toLocaleString();
+		// console.log(window);
+		// console.log(window.io);
 		var socketio = io.connect('http://127.0.0.1:8080');
-
 		socketio.on('message_to_client', function(data){
-			document.getElementById('chats').innerHTML += '<div class="talkbubble im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
+			document.getElementById('chats').innerHTML += '<div class="im">' + data.message + ' -- ' + data.name + ' -- ' +data.date+'</div>';
 		})
-
-		socketio.on('message_to_client', function(data){
-			document.getElementById('who').innerHTML += '<div class="who">'+ data.name + '</div>';
-		})
-
+		socketio.on('users', function(data){
+			var newHTML = "";
+			console.log(data.socketUsers.length);
+			for(var i=0; i<data.socketUsers.length; i++){
+				console.log(i);
+				 newHTML += '<li class="user">'+data.socketUsers[i].name+'</li>'
+			}
+			document.getElementById('chat-stuff').innerHTML = newHTML;
+		});
 		function sendMessage(){
+			var date = new Date().toLocaleString();
 			var message = document.getElementById('message').value;
-			var date = document.getElementById("message").innerHTML = Date();
-			socketio.emit('message_to_server', 
+			socketio.emit(
+				'message_to_server',
 				{
 					message: message,
-					name: name
-					date.date 
+					name: name,
+					date: date
 				}
 			);
 		}
-
-		socketio.on('users', function(socketUsers){
-			var newHTML = "";
-			for(var i = 0; i < socketUsers; i++){
-				newHTML += '<li class="user">' + socketUsers[i].name + '</li>'
-			}
-			document.getElementsById('chat-stuff').innerHTML = newHTML;
-		});
-
 		function sendName(){
 			name = document.getElementById('nameInput').value;
-			socketio.emit('name_to_server', {name: name});
+			socketio.emit('name_to_server',{name: name});
 		}
-
 	</script>
-
-	<style>
-		
-	body{
-		background-color: #FABC3C;
-		color:  #EE4266;
-		font-family: 'Chewy', cursive;
-		font-size: 1.5em;
-		margin: 50px;
-	}
-	
-	h1, h2 {
-		text-align: center;
-		text-decoration: underline;
-	}
-
-	small{
-		font-size: 0.5em;
-		color: #011627;
-	}
-
-	button{
-		font-family: 'Chewy', cursive;
-		background-color: #EE4266;
-		color: #FDFFFC;
-		font-size: 15px;
-	}
-	.container {
-		height:  800px;
-		width: 100%;
-		/* margin-left: 230px; */
-		position: relative;
-	}
-	#chat-window {
-		background-color: #011627;
-		position: absolute;
-	    height: 800px;
-	    /* top: 740px; */
-	    width: 60%;
-	    font-size: 20px;
-	    display: inline;
-	}
-
-	#chat-window input {
-		position: absolute;
-	    top: 690px;
-	    height: 100px;
-	    width: inherit;
-	    margin: 1px 30px;
-	    font-size: 20px;
-	    font-family: 'Chewy', cursive;
-	}
-
-	#chat-window button {
-		top: 760px;
-    	position: absolute;
-    	margin-left: 400px;
-	}	
-
-	#name-window { 
-		background-color: #7FA8A6;
-	    margin: 10px;
-	    padding: 5px;
-	    width: 25%;
-	    height: 790px;
-	    position: relative;
-	  	left: 600px;
-	 }
-
-	div .im {
-		color: #EE4266;
-		margin: 10px 10px;
-		background: rgba(253, 255, 252,0.7); 
-		font-size: 25px;
-		padding: 5px
-	}
-
-	div .who {
-		color: #EE4266;
-		margin: 5px 10px;
-		font-size: 30px;
-		padding: 5px;
-	}
-
-	.talkbubble {
-	   width: 560px;
-	   height: 65px;
-	   background: rgba(253, 255, 252,0.7);
-	   position: relative;
-	   -moz-border-radius:    10px;
-	   -webkit-border-radius: 10px;
-	   border-radius:         10px;
-	}
-
-	.talkbubble:before {
-	   content:"";
-	   position: absolute;
-	   right: 100%;
-	   top: 26px;
-	   width: 0;
-	   height: 0;
-	   border-top: 13px solid transparent;
-	   border-right: 26px solid rgba(253, 255, 252,0.7);
-	   border-bottom: 13px solid transparent;
-	}
-
-
-	</style>
 
 </head>
 <body ng-controller="myController">
 
-<h1>Chat Room</h1>
+	<h1>Chat Room</h1>
 
-<div id="name">
-	<input type="text" id="nameInput" placeholder="Enter name">
-	<button onclick="sendName()" placeholder="Please enter name">Submit name</button>
-</div>
-
-<div class="container">
-	<div id="chat-window">
-		<input type='text' id="message" placeholder="Your message here">
-
-		<button onclick="sendMessage()">Click here to send message!</button>
-
-		<div id="chats"></div>
+	<div id="name">
+		<input type="text" id="nameInput">
+		<button onclick="sendName()">Submit Name</button>
 	</div>
 
-	<div id="name-window">
-		<h2>Participants</h2>
-		<div id="who"></div>
+		<input type="text" id="message" placeholder="Your message here">
+		<button onclick="sendMessage()">Click here to send message!</button>
+	<div id="chat-window">
 		<div id="chats"></div>
 		<div id="chat-stuff">
 			<ul>
-				<li ng-repeat="userNames">
+				<li ng-repeat="name in userNames">
 					{{name}}
 				</li>
 			</ul>
 		</div>
-	</div>	
-</div>
+	</div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-
-<script>
-var myApp = angular.module('myApp', []);
-myApp.controller('myController', function($scope){
-	$scope.message = "test";
-});
+<script type="text/javascript">
+	var myApp = angular.module('myApp', []);
+	myApp.controller('myController',function($scope){
+		$scope.message = "Test";
+	});
 </script>
+
+
 
 </body>
 </html>
+Contact GitHub API Training Shop Blog About

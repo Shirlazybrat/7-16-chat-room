@@ -1,74 +1,77 @@
-var http = require("http"); //inckude the http module
-var fs = require("fs"); //include the file system module
+var http = require("http");
+var fs = require("fs");
 
-
-// server is what happens when someone loads up the page in a browser
-// server is listening below for http traffic at  port XXXX
-
+//server is the what happens when someone loads up the page in a browser.
+//server is listening below for http traffic at port XXXX
 var server = http.createServer(function(req, res){
-	console.log('someone conneted via http')
-	fs.readFile('index.html', 'utf-8', function(error, data){
-		//console.log(error);
-		// console.log(data);
-		if (error){
-			res.writeHead(500, {'content-type' : 'text/html'});
-			res.end(error);
-		}
-		else{
-			res.writeHead(200, {'content-type' : 'text/html'});
-			res.end(data);
-		}
-	})
-});
 
-// include the socket.io module
-var socketIo = require('socket.io');
-var socketUsers = [];
 
-	userSocketStuff = {
-	scoket: scoket
+	if(req.url === '/styles.css'){
+		// fs.readFile('styles.css', 'utf-8', function(error, data){
+		// 	// console.log(error);
+		// 	// console.log(data);
+		// 	if(error){
+		// 		res.writeHead(500, {'content-type': 'text/html'});
+		// 		res.end(error);
+		// 	}else{
+		// 		res.writeHead(200, {'content-type': 'text/html'});
+		// 		res.end(data);
+		// 	});
 	}
 
+	console.log("Someone connected via http");
+	fs.readFile('index.html', 'utf-8', function(error, data){
+		// console.log(error);
+		// console.log(data);
+		if(error){
+			res.writeHead(500, {'content-type': 'text/html'});
+			res.end(error);
+		}else{
+			res.writeHead(200, {'content-type': 'text/html'});
+			res.end(data);
+		}
+	});
+});
 
+//Include the socketio module
+var socketIo = require('socket.io');
 // listen to the server which is listening on port XXXX
 var io = socketIo.listen(server);
-//we need to deal with a new socket connection
+var socketUsers = [];
 
-
-	io.sockets.on('connect', function(socket){
-		scoketUsers.push({
-		socketID: socket.id,
-		name: 'unknown'
+//We need to deal wiht a new socket connection
+io.sockets.on('connect', function(socket){
+	// console.log(socket);
+	socketUsers.push({
+		'socketID': socket.con,
+		'name': 'Anonymous'
 	});
 
 	io.sockets.emit('users',{
-		socketUsers : socketUsers
-	});
+		'socketUsers': socketUsers
+	});	
 
-	socketUsers.push(socket);
-	console.log('someone connected via the socket')
-	
-	scoket.on('name_to_server', function(name){
-		io.sockets.emit('users',{
-			name: name.name
-		})
-	});
+	// console.log(socket);
+	console.log("Someone connected via a socket!");
+	socket.on('name_to_server', function(name){
 
+	});
 	socket.on('message_to_server', function(data){
-		io.sockets.emit('message_to_client', {
+		io.sockets.emit('message_to_client',{
 			message: data.message,
 			name: data.name,
-			date: data.data
-			});
+			date: data.date
 		});
-		socket.on('disconnect', function(){
-			console.log('a user has disconnected');
-			var user = socketUsers.indexOf(socket);
-			socketUsers.splice(user,1);
-		});
+	});
+	socket.on('disconnect', function(){
+		// console.log("A user has disconnected");
+		// var user = socketUsers.indexOf(socket);
+		// socketUsers.splice(user,1);
+	});
+
 });
 
 server.listen(8080);
-console.log("Listening on port 8080...");
+console.log('Listening on Port 8080.');
 
 //my ip address with local host = 10.150.50.117:8080
