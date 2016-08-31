@@ -7,7 +7,7 @@
 		#chat-window{
 			display:  block;
 		}
-		#chats, #chat-stuff, #canvas{
+		#chats, #chat-stuff{
 			border:  2px solid black;
 			width:  45%;
 			/* display: inline-block; */
@@ -20,7 +20,9 @@
 		}
 
 		#canvas {
-			width: 35%;
+			border:  2px solid black;
+			/* display: inline-block; */
+			float:  left;
 		}
 
 	</style>
@@ -92,7 +94,7 @@
 		</div>
 	</div>
 
-	<canvas id="canvas"></canvas>
+	<canvas id="canvas" width="500px" height="500px"></canvas>
 
 	<div id="toolbar">
 		<input type="color" id="color-picker">
@@ -111,7 +113,7 @@
 		var canvas = document.getElementById('canvas');
 		var context = canvas.getContext('2d');
 		var mouseDown = false;
-		var color = null;
+		var color = '#000';
 		var thickness = 10;
 		var colorChoice = document.getElementById('color-picker');
 		var mousePosition;
@@ -132,18 +134,21 @@
 			mouseDown = true;
 		})
 
-		canvas.addEventListener('mousedown', function(event){
-			mouseUp = false;
+		canvas.addEventListener('mouseup', function(event){
+			mouseDown = false;
+			lastMousePosition = null;
 		})
 
 		canvas.addEventListener('mousemove', function(event){
 			//console.log(event);
-			var magicBrushX = event.clientX;
-			var magicBrushY = event.clientY;
-			console.log(magicBrushX);
-			console.log(magicBrushY);
+			if(mouseDown){
+			var magicBrushX = event.pageX - canvas.offsetLeft;
+			var magicBrushY = event.pageY - canvas.offsetTop;
+			//console.log(magicBrushX);
+			//console.log(magicBrushY);
+		
 
-			var mousePosition = {
+			mousePosition = {
 				x: magicBrushX,
 				y: magicBrushY
 			}
@@ -153,7 +158,7 @@
 				context.lineJoin = 'round';
 				context.lineWidth = thickness;
 				context.beginPath();
-				contect.moveTo(lastMousePosition.x, lastMousePosition.y);
+				context.moveTo(lastMousePosition.x, lastMousePosition.y);
 				context.lineTo(mousePosition.x, mousePosition.y);
 				context.closePath();
 				context.stroke();
@@ -170,8 +175,8 @@
 				x: mousePosition.x,
 				y: mousePosition.y
 			}
-
-		})
+		}
+	})
 
 
 </script>
