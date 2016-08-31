@@ -3,7 +3,10 @@
 <head>
 	<title>Chat Room</title>
 
+	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
+
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
 
 	<script type="text/javascript">
 	var name = 'unknown';
@@ -13,7 +16,7 @@
 		var socketio = io.connect('http://127.0.0.1:8080');
 
 		socketio.on('message_to_client', function(data){
-			document.getElementById('chats').innerHTML += '<div class="im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
+			document.getElementById('chats').innerHTML += '<div class="talkbubble im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
 		})
 
 		socketio.on('message_to_client', function(data){
@@ -47,7 +50,7 @@
 	body{
 		background-color: #FABC3C;
 		color:  #EE4266;
-		font-family: fantasy;
+		font-family: 'Chewy', cursive;
 		font-size: 1.5em;
 		margin: 50px;
 	}
@@ -63,6 +66,7 @@
 	}
 
 	button{
+		font-family: 'Chewy', cursive;
 		background-color: #EE4266;
 		color: #FDFFFC;
 		font-size: 15px;
@@ -90,12 +94,13 @@
 	    width: inherit;
 	    margin: 1px 30px;
 	    font-size: 20px;
+	    font-family: 'Chewy', cursive;
 	}
 
 	#chat-window button {
-		top: 775px;
+		top: 760px;
     	position: absolute;
-    	margin-left: 364px;
+    	margin-left: 400px;
 	}	
 
 	#name-window { 
@@ -122,6 +127,29 @@
 		font-size: 30px;
 		padding: 5px;
 	}
+
+	.talkbubble {
+	   width: 560px;
+	   height: 65px;
+	   background: rgba(253, 255, 252,0.7);
+	   position: relative;
+	   -moz-border-radius:    10px;
+	   -webkit-border-radius: 10px;
+	   border-radius:         10px;
+	}
+
+	.talkbubble:before {
+	   content:"";
+	   position: absolute;
+	   right: 100%;
+	   top: 26px;
+	   width: 0;
+	   height: 0;
+	   border-top: 13px solid transparent;
+	   border-right: 26px solid rgba(253, 255, 252,0.7);
+	   border-bottom: 13px solid transparent;
+	}
+
 
 	</style>
 
