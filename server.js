@@ -25,17 +25,36 @@ var server = http.createServer(function(req, res){
 var socketIo = require('socket.io');
 var socketUsers = [];
 
+	userSocketStuff = {
+	scoket: scoket
+	}
+
 
 // listen to the server which is listening on port XXXX
 var io = socketIo.listen(server);
 //we need to deal with a new socket connection
+
+
 	io.sockets.on('connect', function(socket){
+		scoketUsers.push({
+		socketID: socket.id,
+		name: 'unknown'
+	});
+
 	socketUsers.push(socket);
 	console.log('someone connected via the socket')
+	
+	scoket.on('name_to_server', function(name){
+		io.sockets.emit('users',{
+			name: name.name
+		})
+	});
+
 	socket.on('message_to_server', function(data){
 		io.sockets.emit('message_to_client', {
 			message: data.message,
-			name: data.name
+			name: data.name,
+			date: data.data
 			});
 		});
 		socket.on('disconnect', function(){

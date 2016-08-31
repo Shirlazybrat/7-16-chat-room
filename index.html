@@ -29,18 +29,19 @@
 			socketio.emit('message_to_server', 
 				{
 					message: message,
-					name: name 
+					name: name
+					date.date 
 				}
 			);
 		}
 
+		socketio.on('users', function(name){
+			document.getElementsById('chat-stuff').innerHTML += '<ul><li class="users">' + name.name + '</li><ul>'
+		});
+
 		function sendName(){
 			name = document.getElementById('nameInput').value;
-			socketio.emit('message_to_server', 
-				{
-					name: name 
-				}
-			);
+			socketio.emit('name_to_server', {name: name});
 		}
 
 	</script>
@@ -154,7 +155,7 @@
 	</style>
 
 </head>
-<body>
+<body ng-controller="myController">
 
 <h1>Chat Room</h1>
 
@@ -175,10 +176,25 @@
 	<div id="name-window">
 		<h2>Participants</h2>
 		<div id="who"></div>
+		<div id="chats"></div>
+		<div id="chat-stuff">
+			<ul>
+				<li ng-repeat="userNames">
+					{{name}}
+				</li>
+			</ul>
+		</div>
 	</div>	
 </div>
 
-	
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+<script>
+var myApp = angular.module('myApp', []);
+myApp.controller('myController', function($scope){
+	$scope.message = "test";
+});
+</script>
 
 </body>
 </html>
