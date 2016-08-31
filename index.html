@@ -4,48 +4,6 @@
 	<title>Chat Room</title>
 
 	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
-
-	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-
-
-	<script type="text/javascript">
-	var name = 'unknown';
-	var date = new Date();
-
-		console.log(io);
-		var socketio = io.connect('http://127.0.0.1:8080');
-
-		socketio.on('message_to_client', function(data){
-			document.getElementById('chats').innerHTML += '<div class="talkbubble im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
-		})
-
-		socketio.on('message_to_client', function(data){
-			document.getElementById('who').innerHTML += '<div class="who">'+ data.name + '</div>';
-		})
-
-		function sendMessage(){
-			var message = document.getElementById('message').value;
-			var date = document.getElementById("message").innerHTML = Date();
-			socketio.emit('message_to_server', 
-				{
-					message: message,
-					name: name
-					date.date 
-				}
-			);
-		}
-
-		socketio.on('users', function(name){
-			document.getElementsById('chat-stuff').innerHTML += '<ul><li class="users">' + name.name + '</li><ul>'
-		});
-
-		function sendName(){
-			name = document.getElementById('nameInput').value;
-			socketio.emit('name_to_server', {name: name});
-		}
-
-	</script>
-
 	<style>
 		
 	body{
@@ -153,6 +111,48 @@
 
 
 	</style>
+
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+
+	<script type="text/javascript">
+	var name = 'unknown';
+	var date = new Date();
+
+		console.log(io);
+		var socketio = io.connect('http://127.0.0.1:8080');
+
+		socketio.on('message_to_client', function(data){
+			document.getElementById('chats').innerHTML += '<div class="talkbubble im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
+		})
+
+		socketio.on('message_to_client', function(data){
+			document.getElementById('who').innerHTML += '<div class="who">'+ data.name + '</div>';
+		})
+
+		function sendMessage(){
+			var message = document.getElementById('message').value;
+			var date = document.getElementById("message").innerHTML = Date();
+			socketio.emit('message_to_server', 
+				{
+					message: message,
+					name: name
+					date.date 
+				}
+			);
+		}
+
+		socketio.on('users', function(name){
+			document.getElementsById('chat-stuff').innerHTML += '<ul><li class="users">' + name.name + '</li><ul>'
+		});
+
+		function sendName(){
+			name = document.getElementById('nameInput').value;
+			socketio.emit('name_to_server', {name: name});
+		}
+
+	</script>
+
 
 </head>
 <body ng-controller="myController">
