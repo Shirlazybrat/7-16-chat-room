@@ -6,13 +6,14 @@
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
 	<script type="text/javascript">
-	var name = 'AKA';
+	var name = 'unknown';
+	var date = new Date();
 
 		console.log(io);
 		var socketio = io.connect('http://127.0.0.1:8080');
 
 		socketio.on('message_to_client', function(data){
-			document.getElementById('chats').innerHTML += '<div class="im">'+ data.message + ' - ' + data.name + '</div>';
+			document.getElementById('chats').innerHTML += '<div class="im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
 		})
 
 		socketio.on('message_to_client', function(data){
@@ -21,6 +22,7 @@
 
 		function sendMessage(){
 			var message = document.getElementById('message').value;
+			var date = document.getElementById("message").innerHTML = Date();
 			socketio.emit('message_to_server', 
 				{
 					message: message,
@@ -46,58 +48,79 @@
 		background-color: #FABC3C;
 		color:  #EE4266;
 		font-family: fantasy;
-		font-size: 1em;
-		margin: 100px;
+		font-size: 1.5em;
+		margin: 50px;
 	}
 	
-	h1 {
+	h1, h2 {
 		text-align: center;
+		text-decoration: underline;
+	}
+
+	small{
+		font-size: 0.5em;
+		color: #011627;
+	}
+
+	button{
+		background-color: #EE4266;
+		color: #FDFFFC;
+		font-size: 15px;
 	}
 	.container {
-		background-color: #011627;
 		height:  800px;
-		width: 600px;
-		margin: 20px;
+		width: 100%;
+		/* margin-left: 230px; */
 		position: relative;
 	}
-	
-	#chat-window input {
-		position: relative;
-	    height: 50px;
-	    top: 740px;
-	    width: 590px;
+	#chat-window {
+		background-color: #011627;
+		position: absolute;
+	    height: 800px;
+	    /* top: 740px; */
+	    width: 60%;
 	    font-size: 20px;
 	    display: inline;
 	}
 
+	#chat-window input {
+		position: absolute;
+	    top: 690px;
+	    height: 100px;
+	    width: inherit;
+	    margin: 1px 30px;
+	    font-size: 20px;
+	}
+
 	#chat-window button {
-		position: relative;
-	    top: 710px;
-	    /* float: right; */
-	    margin-left: 200px;
+		top: 775px;
+    	position: absolute;
+    	margin-left: 364px;
 	}	
 
 	#name-window { 
-		background: #7FA8A6;
+		background-color: #7FA8A6;
 	    margin: 10px;
 	    padding: 5px;
-	    width: 200px;
-	    height: 700px;
-	    position: absolute;
+	    width: 25%;
+	    height: 790px;
+	    position: relative;
 	  	left: 600px;
 	 }
 
 	div .im {
 		color: #EE4266;
-		margin: 5px 10px;
-		background: rgba(253, 255, 252,0.5); 
+		margin: 10px 10px;
+		background: rgba(253, 255, 252,0.7); 
 		font-size: 25px;
+		padding: 5px
 	}
 
 	div .who {
 		color: #EE4266;
 		margin: 5px 10px;
 		font-size: 30px;
+		padding: 5px;
 	}
 
 	</style>
@@ -109,7 +132,7 @@
 
 <div id="name">
 	<input type="text" id="nameInput" placeholder="Enter name">
-	<button onclick="sendName()" placehlder="Please enter name">Submit name</button>
+	<button onclick="sendName()" placeholder="Please enter name">Submit name</button>
 </div>
 
 <div class="container">
