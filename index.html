@@ -12,7 +12,11 @@
 		var socketio = io.connect('http://127.0.0.1:8080');
 
 		socketio.on('message_to_client', function(data){
-			document.getElementById('chats').innerHTML += '<div class="im">'+ data.message + ' -- ' + data.name + '</div>';
+			document.getElementById('chats').innerHTML += '<div class="im">'+ data.message + ' - ' + data.name + '</div>';
+		})
+
+		socketio.on('message_to_client', function(data){
+			document.getElementById('who').innerHTML += '<div class="who">'+ data.name + '</div>';
 		})
 
 		function sendMessage(){
@@ -27,6 +31,11 @@
 
 		function sendName(){
 			name = document.getElementById('nameInput').value;
+			socketio.emit('message_to_server', 
+				{
+					name: name 
+				}
+			);
 		}
 
 	</script>
@@ -34,39 +43,61 @@
 	<style>
 		
 	body{
-		background-color: grey;
-		color:  pink;
+		background-color: #FABC3C;
+		color:  #EE4266;
 		font-family: fantasy;
 		font-size: 1em;
-		margin: 100px 300px 100px 300px;
+		margin: 100px;
 	}
-
+	
+	h1 {
+		text-align: center;
+	}
 	.container {
-		background-color: #fff;
+		background-color: #011627;
 		height:  800px;
 		width: 600px;
 		margin: 20px;
+		position: relative;
 	}
 	
 	#chat-window input {
 		position: relative;
 	    height: 50px;
-	    margin-top: ;
 	    top: 740px;
 	    width: 590px;
 	    font-size: 20px;
+	    display: inline;
 	}
 
 	#chat-window button {
 		position: relative;
-	    top: 770px;
-	    float: right;
+	    top: 710px;
+	    /* float: right; */
+	    margin-left: 200px;
 	}	
 
+	#name-window { 
+		background: #7FA8A6;
+	    margin: 10px;
+	    padding: 5px;
+	    width: 200px;
+	    height: 700px;
+	    position: absolute;
+	  	left: 600px;
+	 }
+
 	div .im {
-		color: grey;
+		color: #EE4266;
 		margin: 5px 10px;
-		border: solid ;
+		background: rgba(253, 255, 252,0.5); 
+		font-size: 25px;
+	}
+
+	div .who {
+		color: #EE4266;
+		margin: 5px 10px;
+		font-size: 30px;
 	}
 
 	</style>
@@ -89,7 +120,14 @@
 
 		<div id="chats"></div>
 	</div>
+
+	<div id="name-window">
+		<h2>Participants</h2>
+		<div id="who"></div>
+	</div>	
 </div>
+
+	
 
 </body>
 </html>
