@@ -35,8 +35,12 @@
 			);
 		}
 
-		socketio.on('users', function(name){
-			document.getElementsById('chat-stuff').innerHTML += '<ul><li class="users">' + name.name + '</li><ul>'
+		socketio.on('users', function(socketUsers){
+			var newHTML = "";
+			for(var i = 0; i < socketUsers; i++){
+				newHTML += '<li class="user">' + socketUsers[i].name + '</li>'
+			}
+			document.getElementsById('chat-stuff').innerHTML = newHTML;
 		});
 
 		function sendName(){

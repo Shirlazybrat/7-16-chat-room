@@ -41,6 +41,10 @@ var io = socketIo.listen(server);
 		name: 'unknown'
 	});
 
+	io.sockets.emit('users',{
+		socketUsers : socketUsers
+	});
+
 	socketUsers.push(socket);
 	console.log('someone connected via the socket')
 	
