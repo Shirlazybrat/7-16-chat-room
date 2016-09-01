@@ -38,13 +38,39 @@
 	}
 	#chat-window {
 		background-color: #011627;
-		position: absolute;
+		/* position: absolute;
 	    height: 800px;
-	    /* top: 740px; */
 	    width: 60%;
 	    font-size: 20px;
-	    display: inline;
+	    display: inline; */
+	    border:  2px solid black;
+			width:  45%;
+			/* display: inline-block; */
+			float:  left;
+			min-height: 90vh;
 	}
+
+	#name-window { 
+		background-color: #7FA8A6;
+	    /* margin: 10px;
+	    padding: 5px;
+	    width: 25%;
+	    height: 790px;
+	    position: relative;
+	  	left: 600px; */
+	  	border:  2px solid black;
+			width:  25%;
+			/* display: inline-block; */
+			float:  left;
+			min-height: 90vh;
+	 }
+
+	 #canvas {
+			border:  2px solid black;
+			background-color: white;
+			/* display: inline-block; */
+			float:  left;
+		}
 
 	#chat-window input {
 		position: absolute;
@@ -62,15 +88,6 @@
     	margin-left: 400px;
 	}	
 
-	#name-window { 
-		background-color: #7FA8A6;
-	    margin: 10px;
-	    padding: 5px;
-	    width: 25%;
-	    height: 790px;
-	    position: relative;
-	  	left: 600px;
-	 }
 
 	div .im {
 		color: #EE4266;
@@ -109,46 +126,51 @@
 	   border-bottom: 13px solid transparent;
 	}
 
-
 	</style>
 
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
 
 	<script type="text/javascript">
-	var name = 'unknown';
-	var date = new Date();
-
-		console.log(io);
+	var name = prompt("What is your name?");
+		// console.log(window);
+		// console.log(window.io);
 		var socketio = io.connect('http://127.0.0.1:8080');
+		socketio.emit('name_to_server', name);
 
 		socketio.on('message_to_client', function(data){
-			document.getElementById('chats').innerHTML += '<div class="talkbubble im">'+ data.message + ' - ' + data.name + '<br><small>' + date + '</small></div>';
+			document.getElementById('chats').innerHTML += '<div class="talkbubble im">'+ data.message + ' - ' + data.name + '<br><small>' + data.date + '</small></div>';
 		})
 
-		socketio.on('message_to_client', function(data){
-			document.getElementById('who').innerHTML += '<div class="who">'+ data.name + '</div>';
-		})
+		socketio.on('users', function(socketUsers){
+			var newHTML = "";
+			//console.log(data.socketUsers.length);
+			for(var i=0; i<socketUsers.length; i++){
+				//console.log(i);
+				 newHTML += '<li class="user">'+ socketUsers[i].name+'</li>'
+			}
+			document.getElementById('who').innerHTML = newHTML;
+		});
 
 		function sendMessage(){
+			var date = new Date().toLocaleString();
 			var message = document.getElementById('message').value;
-			var date = document.getElementById("message").innerHTML = Date();
 			socketio.emit('message_to_server', 
 				{
 					message: message,
-					name: name
-					date.date 
+					name: name,
+					date: date 
 				}
 			);
 		}
 
-		socketio.on('users', function(name){
-			document.getElementsById('chat-stuff').innerHTML += '<ul><li class="users">' + name.name + '</li><ul>'
-		});
+		// socketio.on('users', function(name){
+		// 	document.getElementsById('chat-stuff').innerHTML += '<ul><li class="users">' + name.name + '</li><ul>'
+		// });
 
 		function sendName(){
 			name = document.getElementById('nameInput').value;
-			socketio.emit('name_to_server', {name: name});
+			socketio.emit('name_to_server', name);
 		}
 
 	</script>
@@ -175,9 +197,8 @@
 
 	<div id="name-window">
 		<h2>Participants</h2>
-		<div id="who"></div>
 		<div id="chats"></div>
-		<div id="chat-stuff">
+		<div id="who"></div>
 			<ul>
 				<li ng-repeat="userNames">
 					{{name}}
@@ -187,6 +208,14 @@
 	</div>	
 </div>
 
+<canvas id="canvas" width="500px" height="500px"></canvas>
+
+	<div id="toolbar">
+		<input type="color" id="color-picker">
+		<label>Choose Your thickness</label>
+		<input type="number" id="thickness-picker" placeholder=10>
+	</div>
+
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
 
 <script>
@@ -194,6 +223,81 @@ var myApp = angular.module('myApp', []);
 myApp.controller('myController', function($scope){
 	$scope.message = "test";
 });
+
+//Canvas section start
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		var mouseDown = false;
+		var color = '#000';
+		var thickness = 10;
+		var colorChoice = document.getElementById('color-picker');
+		var mousePosition;
+		var lastMousePosition = null;
+			
+		colorChoice.addEventListener('change', function(event){
+			color = colorChoice.value;
+			console.log(color);
+		});
+		var thicknessPicker = document.getElementById('thickness-picker');
+		thicknessPicker.addEventListener('change', function(event){
+			thickness = thicknessPicker.value;
+			console.log(thickness);
+		});
+		canvas.addEventListener('mousedown', function(event){
+			mouseDown = true;
+		})
+		canvas.addEventListener('mouseup', function(event){
+			mouseDown = false;
+			lastMousePosition = null;
+		})
+		canvas.addEventListener('mousemove', function(event){
+			//console.log(event);
+			if(mouseDown){
+			var magicBrushX = event.pageX - canvas.offsetLeft;
+			var magicBrushY = event.pageY - canvas.offsetTop;
+			//console.log(magicBrushX);
+			//console.log(magicBrushY);
+		
+			mousePosition = {
+				x: magicBrushX,
+				y: magicBrushY
+			}
+			if(lastMousePosition !== null){
+				context.strokeStyle = color;
+				context.lineJoin = 'round';
+				context.lineWidth = thickness;
+				context.beginPath();
+				context.moveTo(lastMousePosition.x, lastMousePosition.y);
+				context.lineTo(mousePosition.x, mousePosition.y);
+				context.closePath();
+				context.stroke();
+			}
+			var drawingData = {
+				mousePosition: mousePosition,
+				lastMousePosition: lastMousePosition,
+				color: color,
+				thickness : thickness
+			}
+			socketio.emit('drawing_to_server', drawingData);
+			lastMousePosition = {
+				x: mousePosition.x,
+				y: mousePosition.y
+			}
+		}
+	})
+		socketio.on('drawing_to_client', function(drawingData){
+			context.strokeStyle = drawingData.color;
+			context.lineJoin = "round";
+			context.lineWidth = drawingData.thickness;
+			context.beginPath();
+			context.moveTo(drawingData.lastMousePosition.x, drawingData.lastMousePosition.y);
+			context.lineTo(drawingData.mousePosition.x, drawingData.mousePosition.y);
+			context.closePath();
+			context.stroke();
+		});
+</script>
+
+
 </script>
 
 </body>

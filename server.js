@@ -9,7 +9,7 @@ var server = http.createServer(function(req, res){
 	console.log('someone conneted via http')
 	fs.readFile('index.html', 'utf-8', function(error, data){
 		//console.log(error);
-		// console.log(data);
+		//console.log(data);
 		if (error){
 			res.writeHead(500, {'content-type' : 'text/html'});
 			res.end(error);
@@ -23,44 +23,60 @@ var server = http.createServer(function(req, res){
 
 // include the socket.io module
 var socketIo = require('socket.io');
-var socketUsers = [];
-
-	userSocketStuff = {
-	scoket: scoket
-	}
-
 
 // listen to the server which is listening on port XXXX
 var io = socketIo.listen(server);
 //we need to deal with a new socket connection
+var socketUsers = [];
+var chatHistory = [];
+var currentCanvas = [];
 
-
+//We need to deal with a new socket connection
 	io.sockets.on('connect', function(socket){
 		scoketUsers.push({
 		socketID: socket.id,
 		name: 'unknown'
 	});
 
-	socketUsers.push(socket);
-	console.log('someone connected via the socket')
+	io.sockets.emit('users', socketUsers);
 	
-	scoket.on('name_to_server', function(name){
-		io.sockets.emit('users',{
-			name: name.name
-		})
+	// console.log(socket);
+	console.log("Someone connected via a socket!");
+	//Someone just changed their name
+	socket.on('name_to_server', function(name){
+		for (var i = 0; i < socketUsers.length; i++){
+			if(socketUsers[i].socketID == socket.id){
+				socketUsers[i].name = name;
+				break;
+			}
+		}
+		io.sockets.emit('users', socketUsers);
 	});
+
 
 	socket.on('message_to_server', function(data){
 		io.sockets.emit('message_to_client', {
 			message: data.message,
 			name: data.name,
-			date: data.data
+			date: data.date
 			});
 		});
+
+	socket.on('drawing_to_server', function(drawingData){
+		if(drawingData.lastMousePosition !== null){
+		io.sockets.emit('drawing_to_client', drawingData);
+		}
+	})
+
 		socket.on('disconnect', function(){
-			console.log('a user has disconnected');
-			var user = socketUsers.indexOf(socket);
-			socketUsers.splice(user,1);
+			console.log(socket.id + '-- user has disconnected');
+			for (var i = 0; i < socketUsers.length; i++){
+			if(socketUsers[i].socketID == socket.id){
+				socketUsers.splice(i,1);
+				break;
+			}
+		}
+		io.sockets.emit('users', socketUsers);
 		});
 });
 
