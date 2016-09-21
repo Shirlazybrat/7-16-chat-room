@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
-	<title>Chat Room</title>
+	<title>Guess My Picture</title>
 
 	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
 	
@@ -18,6 +18,11 @@
 	h1, h2 {
 		text-align: center;
 		text-decoration: underline;
+	}
+
+	h1{
+		font-size: 3em;
+		margin:  0px;
 	}
 
 	small{
@@ -46,7 +51,7 @@
 	    font-size: 20px;
 	    display: inline; */
 	    border:  2px solid black;
-			width:  45%;
+			width: 40%;
 			/* display: inline-block; */
 			float:  left;
 			min-height: 90vh;
@@ -61,21 +66,23 @@
 	    position: relative;
 	  	left: 600px; */
 	  	border:  2px solid black;
-			width:  25%;
+			width:  15%;
 			/* display: inline-block; */
 			float:  left;
 			min-height: 90vh;
 	 }
 
 	 #canvas {
-			border:  2px solid black;
+			border: 2px solid black;
 			background-color: white;
 			/* display: inline-block; */
-			float:  left;
+			float: left;
+			width: 40%;
+			min-height: 90vh;
 		}
 
 	#chat-window input {
-		position: absolute;
+		/* position: fixed; */
 	    top: 690px;
 	    height: 100px;
 	    width: inherit;
@@ -126,6 +133,10 @@
 	   border-top: 13px solid transparent;
 	   border-right: 26px solid rgba(253, 255, 252,0.7);
 	   border-bottom: 13px solid transparent;
+	}
+
+	#toolbar {
+		width: 5%;
 	}
 
 	</style>
@@ -182,7 +193,7 @@
 
 <body ng-controller="myController">
 
-<h1>Chat Room</h1>
+<h1>Guess My Picture</h1>
 
 <div id="name">
 	<input type="text" id="nameInput" placeholder="Enter name">
@@ -211,14 +222,13 @@
 			</ul>
 		</div>
 	</div>	
-<!-- </div> -->
-
 
 	<div id="toolbar">
+		<label>Draw options</label>
 		<input type="color" id="color-picker">
-		<label>Choose Your thickness</label>
 		<input type="number" id="thickness-picker" placeholder=10>
 	</div>
+<!-- </div> -->
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
 
