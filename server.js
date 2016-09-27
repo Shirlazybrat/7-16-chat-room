@@ -18,7 +18,7 @@ var server = http.createServer(function(req, res){
 			res.writeHead(200, {'content-type' : 'text/html'});
 			res.end(data);
 		}
-	})
+	});
 });
 
 // include the socket.io module
@@ -33,11 +33,12 @@ var currentCanvas = [];
 
 //We need to deal with a new socket connection
 	io.sockets.on('connect', function(socket){
-		scoketUsers.push({
+		socketUsers.push({
 		socketID: socket.id,
 		name: 'unknown'
 	});
 
+//this object is 'socketUsers on index.html's 'users' socket
 	io.sockets.emit('users', socketUsers);
 	
 	// console.log(socket);
@@ -66,6 +67,10 @@ var currentCanvas = [];
 		if(drawingData.lastMousePosition !== null){
 		io.sockets.emit('drawing_to_client', drawingData);
 		}
+	});
+
+	socket.on('erase_to_server', function(eraseData){
+		io.sockets.emit('erase_to_client', eraseData);
 	})
 
 		socket.on('disconnect', function(){
@@ -77,7 +82,7 @@ var currentCanvas = [];
 			}
 		}
 		io.sockets.emit('users', socketUsers);
-		});
+	});
 });
 
 server.listen(8080);

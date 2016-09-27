@@ -1,6 +1,6 @@
 #Chat & Pictionary Appliction
 
-###This is a Chat application that allows multiple users to interact with each other with the use of sockets, sharing client-to-server information/data. The users have to ability to play a pictionary game with each other as the drawn images display on all the screens of those playing the game. 
+###This is a Chat application that allows multiple users to interact with each other with the use of sockets, sharing client-to-server information/data. The users have the ability to play a pictionary game with each other as the drawn images display on all the screens of those playing the game. 
 
 ![Alt text](img/screen1.png "Chat App")
 

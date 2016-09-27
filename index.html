@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
-	<title>Chat Room</title>
+	<title>Guess My Picture</title>
 
 	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
 	
@@ -13,11 +13,18 @@
 		font-family: 'Chewy', cursive;
 		font-size: 1.5em;
 		margin: 50px;
+		overflow: hidden;
+		position: static;
 	}
 	
 	h1, h2 {
 		text-align: center;
 		text-decoration: underline;
+	}
+
+	h1{
+		font-size: 3em;
+		margin:  0px;
 	}
 
 	small{
@@ -46,7 +53,7 @@
 	    font-size: 20px;
 	    display: inline; */
 	    border:  2px solid black;
-			width:  45%;
+			width: 40%;
 			/* display: inline-block; */
 			float:  left;
 			min-height: 90vh;
@@ -61,21 +68,23 @@
 	    position: relative;
 	  	left: 600px; */
 	  	border:  2px solid black;
-			width:  25%;
+			width:  15%;
 			/* display: inline-block; */
 			float:  left;
 			min-height: 90vh;
 	 }
 
 	 #canvas {
-			border:  2px solid black;
+			border: 2px solid black;
 			background-color: white;
 			/* display: inline-block; */
-			float:  left;
+			float: left;
+			width: 40%;
+			min-height: 90vh;
 		}
 
 	#chat-window input {
-		position: absolute;
+		/* position: fixed; */
 	    top: 690px;
 	    height: 100px;
 	    width: inherit;
@@ -128,6 +137,10 @@
 	   border-bottom: 13px solid transparent;
 	}
 
+	#toolbar {
+		width: 5%;
+	}
+
 	</style>
 
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -137,7 +150,8 @@
 	var name = prompt("What is your name?");
 		// console.log(window);
 		// console.log(window.io);
-		var socketio = io.connect('http://52.36.100.132:8080');
+		var socketio = io.connect('http://127.0.0.1:8080');
+		//http://shirletterly.com:8080/
 		socketio.emit('name_to_server', name);
 
 		socketio.on('message_to_client', function(data){
@@ -181,7 +195,7 @@
 
 <body ng-controller="myController">
 
-<h1>Chat Room</h1>
+<h1>Guess My Picture</h1>
 
 <div id="name">
 	<input type="text" id="nameInput" placeholder="Enter name">
@@ -210,14 +224,13 @@
 			</ul>
 		</div>
 	</div>	
-<!-- </div> -->
-
 
 	<div id="toolbar">
+		<label>Draw options</label>
 		<input type="color" id="color-picker">
-		<label>Choose Your thickness</label>
 		<input type="number" id="thickness-picker" placeholder=10>
 	</div>
+<!-- </div> -->
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
 
