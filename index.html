@@ -137,7 +137,7 @@
 	var name = prompt("What is your name?");
 		// console.log(window);
 		// console.log(window.io);
-		var socketio = io.connect('http://127.0.0.1:8080');
+		var socketio = io.connect('http://52.36.100.132:8080');
 		socketio.emit('name_to_server', name);
 
 		socketio.on('message_to_client', function(data){
