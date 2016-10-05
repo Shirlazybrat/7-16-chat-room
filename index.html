@@ -148,13 +148,14 @@
     #toolbar {
         width: 5%;
     }
+
     </style>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
     var name = prompt("What is your name?");
     // console.log(window);
     // console.log(window.io);
-    var socketio = io.connect('http://127.0.0.1:8080');
+    var socketio = io.connect('http://shirletterly.com');
     //http://shirletterly.com:8080/
     socketio.emit('name_to_server', name);
 
